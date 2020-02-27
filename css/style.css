@@ -1,0 +1,94 @@
+.flex-container {
+    background-color: white;
+    margin: 5%;
+    box-shadow: 5px 5px grey;
+    height: 100px;
+
+}
+
+.first {
+    border: .1px solid black;
+    height: 50px;
+    display: flex;
+    background-color: white;
+    align-items: center;
+    border-bottom: 0px;
+}
+
+.checkout {
+    padding-left: 6px;
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.path {
+
+    flex-grow: 3;
+}
+
+.icon {
+    border: 1px grey;
+    background-color: black;
+    color: white;
+
+    padding: 1px;
+    margin-right: 6px;
+}
+
+ul.path.breadcrumb {
+    background-color: white;
+    padding: 1px 1px 1px 1px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.second {
+    display: flex;
+    background-color: white;
+    height: 50px;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.paymentBlock {
+    padding-left: 6px;
+    flex-grow: 1;
+}
+
+.cart {
+    flex-grow: 1;
+    background-color: rgb(190, 183, 183);
+    height: 48px;
+
+}
+
+.bold {
+    font-weight: bold;
+}
+
+ul.breadcrumb {
+    padding: 10px 16px;
+    list-style: none;
+    background-color: #eee;
+}
+
+ul.breadcrumb li {
+    display: inline;
+    font-size: 18px;
+}
+
+ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}
+
+ul.breadcrumb li a {
+    color: #0275d8;
+    text-decoration: none;
+}
+
+ul.breadcrumb li a:hover {
+    color: #01447e;
+    text-decoration: underline;
+}
