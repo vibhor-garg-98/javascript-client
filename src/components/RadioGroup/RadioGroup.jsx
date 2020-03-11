@@ -7,13 +7,13 @@ const RadioGroup = (props) => {
   return (
     <>
       {
-        options && options.length && options.map(({ value, label }) => {
-          return (
-            <Fragment key={label}>
-              <input type="radio" name="cricketGroup" value={value} onChange={onChange} />{label}<br />
-            </Fragment>
-          );
-        })
+        options && options.length && options.map(({ value, label }) => (
+          <Fragment key={label}>
+            <input type="radio" name="cricketGroup" value={value} onChange={onChange} />
+            {label}
+            <br />
+          </Fragment>
+        ))
       }
       <p>
         {error}
@@ -21,7 +21,7 @@ const RadioGroup = (props) => {
     </>
 
   );
-}
+};
 
 
 RadioGroup.propTypes = {

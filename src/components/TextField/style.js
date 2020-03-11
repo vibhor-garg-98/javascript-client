@@ -1,19 +1,16 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 const Input = styled.input`
-  ${props =>
-    props.value === "Disabled input" &&
-    css`
+  ${(props) => props.value === 'Disabled input'
+    && css`
       width: 100%;
     `};
-  ${props =>
-    props.value === "Accessible" &&
-    css`
+  ${(props) => props.value === 'Accessible'
+    && css`
       width: 100%;
     `};
-  ${props =>
-    props.value === "101" &&
-    css`
+  ${(props) => props.value === '101'
+    && css`
       width: 100%;
       border-color: red;
     `};
