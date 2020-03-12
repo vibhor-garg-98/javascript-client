@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Input from './style';
+import { P } from './style'
 
 const TextField = (props) => {
   const {
-    onChange, value, error,
+    onChange, value, error, onBlur
   } = props;
   return (
     <>
-      <Input type="text" onChange={onChange} value={value} />
-
-      {error}
+      <Input type="text" onChange={onChange} value={value} onBlur={onBlur} />
+      <P>
+        {error}
+      </P>
     </>
   );
 };
