@@ -1,3 +1,3 @@
-import TextFieldDemo  from './TextFieldDemo';
+import TextFieldDemo from './TextFieldDemo';
 
 export default TextFieldDemo;
