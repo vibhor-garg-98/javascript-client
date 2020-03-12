@@ -10,11 +10,9 @@ class InputDemo extends Component {
   constructor(props) {
     super(props);
     this.error = false;
-    this.nameTouched = false;
-    this.sportTouch = false;
-    this.optionsTouch = false;
+
     this.schema = yup.object().shape({
-      name: yup.string().required('Please enter your name').min(3, 'Please enter no less than 3 characters'),
+      name: yup.string().required('Name is required field').min(3, 'Please enter no less than 3 characters'),
       sport: yup.string().required('Please select a sport'),
       cricket: yup.string().when('sport', {
         is: 'cricket',
@@ -31,11 +29,11 @@ class InputDemo extends Component {
       sport: '',
       cricket: '',
       football: '',
-      touched:{
-        name:false,
-        sport:false,
+      touched: {
+        name: false,
+        sport: false,
         cricket: false,
-        football:false,
+        football: false,
       }
     };
   }
@@ -45,10 +43,14 @@ class InputDemo extends Component {
   }
 
   onChangeSelectOptions = (event) => {
-    let { cricket, football } = this.state;
+    let { cricket, football, sport } = this.state;
+    sport = event.target.value;
+    if (sport === 'select') {
+      sport = '';
+    }
     cricket = '';
     football = '';
-    this.setState({ sport: event.target.value, cricket, football });
+    this.setState({ sport, cricket, football });
   }
 
   onChangeRadioOption = (event) => {
@@ -79,17 +81,18 @@ class InputDemo extends Component {
   }
 
   isTouched = (field) => {
-    const { touched } = this.state
-  this.setState({touched:{ ...touched,[field]:true }})
+    const { touched } = this.state;
+    this.setState({ touched: { ...touched, [field]: true } });
   }
 
   getError = (field) => {
-    try {
-      this.schema.validateSyncAt(field, this.state);
-    } catch (err) {
-      return err.message;
+    if (this.state.touched[field] && this.hasErrors()) {
+      try {
+        this.schema.validateSyncAt(field, this.state);
+      } catch (err) {
+        return err.message;
+      }
     }
-
   };
 
   render() {
@@ -123,13 +126,14 @@ class InputDemo extends Component {
                 options={this.getRadioOptions()}
                 onChange={this.onChangeRadioOption}
                 error={this.getError(sport)}
+                onBlur={() => this.isTouched(sport)}
               />
             </>
           )
         }
         <div align="right">
-          <Button  value="cancel" />
-          <Button  value="submit" disabled={this.hasErrors()} />
+          <Button value="cancle" />
+          <Button value="submit" disabled={this.hasErrors()} />
         </div>
       </form>
     );

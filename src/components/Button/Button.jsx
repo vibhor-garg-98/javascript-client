@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Buttons} from './style'
+import { Buttons } from './style'
 
 const Button = (props) => {
   const {
@@ -9,8 +9,7 @@ const Button = (props) => {
   return (
     <>
       <Buttons
-        type="submit"
-        value={value}
+        type={value}
         style={style}
         color={color}
         disabled={disabled}

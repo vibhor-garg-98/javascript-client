@@ -24,6 +24,8 @@ const Input = styled.input`
 `;
 const P = styled.p`
   color: red;
+  font-size: 12px;
+  margin: auto;
 `;
 const Div = styled.div`
   border: 1px solid black;
