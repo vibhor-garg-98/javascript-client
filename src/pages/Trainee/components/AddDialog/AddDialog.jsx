@@ -17,6 +17,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Grid from '@material-ui/core/Grid';
 
+
 const schema = yup.object().shape({
   name: yup.string().required('Name is required').min(3),
   email: yup.string().email().required('Email is required'),
