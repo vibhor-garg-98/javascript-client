@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,10 +28,10 @@ export default function Navbar() {
           <Typography variant="h6" className={classes.title}>
             Trainee Portal
           </Typography>
-          <Button color="inherit">Tainee</Button>
-          <Button color="inherit">TextField</Button>
-          <Button color="inherit">InputDemo</Button>
-          <Button color="inherit" className={classes.spacing}>ChildrenDemo</Button>
+          <Button component={Link} to ="/Trainee" color="inherit">Tainee</Button>
+          <Button component={Link} to ="/TextFieldDemo" color="inherit">TextFieldDemo</Button>
+          <Button component={Link} to ="/InputDemo" color="inherit">InputDemo</Button>
+          <Button component={Link} to ="/ChildrenDemo" color="inherit" className={classes.spacing}>ChildrenDemo</Button>
           <Button color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
