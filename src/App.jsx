@@ -1,9 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
-import ChildrenDemo from '../src/pages/ChildrenDemo/ChildrenDemo';
-import Trainee from '../src/pages/Trainee/Trainee';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch
+} from 'react-router-dom';
+import ChildrenDemo from './pages/ChildrenDemo/ChildrenDemo';
+import Trainee from './pages/Trainee/Trainee';
 import Login from './pages/Login/Login';
-import TextFieldDemo from '../src/pages/TextFieldDemo/TextFieldDemo';
+import TextFieldDemo from './pages/TextFieldDemo/TextFieldDemo';
 import InputDemo from './pages/InputDemo/InputDemo';
 import PrivateRoute from './routes/PrivateRoute';
 import AuthRoute from './routes/AuthRoute';
