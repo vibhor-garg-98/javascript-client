@@ -10,13 +10,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  InputAdornment
+  InputAdornment,
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Grid from '@material-ui/core/Grid';
-
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required').min(3),
@@ -65,7 +64,6 @@ class AddDialog extends Component {
     schema
       .isValid(this.state)
       .then((valid) => {
-
         if (!valid !== hasError) {
           this.setState({ hasError: !valid });
         }
@@ -86,7 +84,6 @@ class AddDialog extends Component {
   getError = (field) => {
     const { error, touched } = this.state;
     if (touched[field]) {
-
       schema.validateAt(field, this.state).then(() => {
         if (error[field] !== '') {
           this.setState({
@@ -116,7 +113,7 @@ class AddDialog extends Component {
     const {
       name, email, password, confirmPassword, hasError, error,
     } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
     this.hasErrors();
     return (
       <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
@@ -222,4 +219,5 @@ AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };

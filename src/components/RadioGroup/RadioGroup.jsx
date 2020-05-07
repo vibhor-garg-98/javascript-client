@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { P } from './style';
 
 const RadioGroup = (props) => {
-  // console.log('inside radio group', props);
-  const { options, onChange, error, onBlur } = props;
+  const {
+    options, onChange, error, onBlur,
+  } = props;
   return (
     <>
       {
@@ -28,6 +29,7 @@ const RadioGroup = (props) => {
 RadioGroup.propTypes = {
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

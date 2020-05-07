@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Input from './style';
-import { P } from './style'
+import Input, { P } from './style';
 
 const TextField = (props) => {
   const {
-    onChange, value, error, onBlur
+    onChange, value, error, onBlur,
   } = props;
   return (
     <>
@@ -21,6 +20,7 @@ TextField.propTypes = {
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  onBlur: PropTypes.func.isRequired,
   // onClick: PropTypes.fun.isRequired,
 };
 

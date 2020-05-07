@@ -12,16 +12,25 @@ class InputDemo extends Component {
     this.error = false;
 
     this.schema = yup.object().shape({
-      name: yup.string().required('Name is required field').min(3, 'Please enter no less than 3 characters'),
-      sport: yup.string().required('Please select a sport'),
-      cricket: yup.string().when('sport', {
-        is: 'cricket',
-        then: yup.string().required('select option'),
-      }),
-      football: yup.string().when('sport', {
-        is: 'football',
-        then: yup.string().required('select option'),
-      }),
+      name: yup
+        .string()
+        .required('Name is required field')
+        .min(3, 'Please enter no less than 3 characters'),
+      sport: yup
+        .string()
+        .required('Please select a sport'),
+      cricket: yup
+        .string()
+        .when('sport', {
+          is: 'cricket',
+          then: yup.string().required('select option'),
+        }),
+      football: yup
+        .string()
+        .when('sport', {
+          is: 'football',
+          then: yup.string().required('select option'),
+        }),
     });
 
     this.state = {
@@ -29,12 +38,19 @@ class InputDemo extends Component {
       sport: '',
       cricket: '',
       football: '',
+      hasError: false,
+      error: {
+        name: '',
+        sport: '',
+        cricket: '',
+        football: '',
+      },
       touched: {
         name: false,
         sport: false,
         cricket: false,
         football: false,
-      }
+      },
     };
   }
 
@@ -71,32 +87,79 @@ class InputDemo extends Component {
     return sport === 'cricket' ? radioOptionsCricket : radioOptionsFootball;
   }
 
+  // hasErrors = () => {
+  //   try {
+  //     this.schema.validateSync(this.state);
+  //   } catch (err) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  // isTouched = (field) => {
+  //   const { touched } = this.state;
+  //   this.setState({ touched: { ...touched, [field]: true } });
+  // }
+
+  // getError = (field) => {
+  //   if (this.state.touched[field] && this.hasErrors()) {
+  //     try {
+  //       this.schema.validateSyncAt(field, this.state);
+  //     } catch (err) {
+  //       return err.message;
+  //     }
+  //   }
+  // };
+
   hasErrors = () => {
-    try {
-      this.schema.validateSync(this.state)
-    } catch (err) {
-      return true;
-    }
-    return false;
+    const { hasError } = this.state;
+    this.schema.isValid(this.state)
+      .then((valid) => {
+        if (!valid !== hasError) {
+          this.setState({ hasError: !valid });
+        }
+      });
+    return hasError;
   }
 
   isTouched = (field) => {
     const { touched } = this.state;
-    this.setState({ touched: { ...touched, [field]: true } });
+    this.setState({
+      touched: {
+        ...touched,
+        [field]: true,
+      },
+    });
   }
 
   getError = (field) => {
-    if (this.state.touched[field] && this.hasErrors()) {
-      try {
-        this.schema.validateSyncAt(field, this.state);
-      } catch (err) {
-        return err.message;
-      }
+    const { error, touched } = this.state;
+    if (touched[field]) {
+      this.schema.validateAt(field, this.state).then(() => {
+        if (error[field] !== '') {
+          this.setState({
+            error: {
+              ...error,
+              [field]: '',
+            },
+          });
+        }
+      }).catch((err) => {
+        if (err.message !== error[field]) {
+          this.setState({
+            error: {
+              ...error,
+              [field]: err.message,
+            },
+          });
+        }
+      });
     }
+    return error[field];
   };
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     const { sport, name } = this.state;
     return (
       <form>
@@ -113,7 +176,7 @@ class InputDemo extends Component {
           defaultOption="select"
           options={selectOptions}
           onChange={this.onChangeSelectOptions}
-          value={sport}
+          values={sport}
           error={this.getError('sport')}
           onBlur={() => this.isTouched('sport')}
         />

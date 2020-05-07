@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AddDialog from './components/AddDialog/AddDialog';
 import trainee from './data/trainee';
 import Table from './components/Table/Table';
+
 
 const useStyles = (theme) => ({
   root: {
@@ -79,5 +81,9 @@ class Trainee extends Component {
     );
   }
 }
+
+Trainee.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+};
 
 export default withStyles(useStyles)(Trainee);

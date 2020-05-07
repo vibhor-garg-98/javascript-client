@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Route,
   Redirect,
-  Switch
+  Switch,
 } from 'react-router-dom';
 import ChildrenDemo from './pages/ChildrenDemo/ChildrenDemo';
 import Trainee from './pages/Trainee/Trainee';

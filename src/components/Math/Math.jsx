@@ -29,7 +29,8 @@ const Text = (props) => {
         {operator}
         {' '}
         {second}
-        {' '}=
+        {' '}
+        =
         {' '}
         {result}
         {' '}
