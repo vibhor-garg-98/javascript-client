@@ -13,16 +13,15 @@ class Trainee extends Component {
     };
   }
 
-  onClick = () => {
-    this.setState({ open: true }, () => { console.log(this.state); });
+  openDialog = (status) => {
+    this.setState({ open: status });
   };
 
-  onClose = () => {
-    this.setState({ open: false }, () => { console.log(this.state); });
-  };
+  // onClose = () => {
+  //   this.setState({ open: false }, () => { console.log(this.state); });
+  // };
 
   onSubmit = (data) => {
-
     this.setState({ open: false }, () => { console.log(data); });
   };
 
@@ -31,10 +30,10 @@ class Trainee extends Component {
 
     return (
       <>
-        <Button variant="outlined" color="primary" onClick={this.onClick}>
+        <Button variant="outlined" color="primary" onClick={() => this.openDialog(true)}>
           ADD TRAINEE
         </Button>
-        <AddDialog onClose={this.onClose} onSubmit={() => this.onSubmit} open={open} />
+        <AddDialog onClose={() => this.openDialog(false)} onSubmit={() => this.onSubmit} open={open} />
         <ul>
           {
             trainee && trainee.length && trainee.map((element) => (
@@ -45,7 +44,7 @@ class Trainee extends Component {
           }
         </ul>
       </>
-    )
+    );
   }
 }
 
