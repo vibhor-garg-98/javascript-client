@@ -5,7 +5,7 @@ const Text = (props) => {
   const {
     first, second, operator, children,
   } = props;
-  let { result } = props;
+  let result = 0;
   switch (operator) {
   case '+': result = first + second;
     break;
@@ -15,7 +15,8 @@ const Text = (props) => {
     break;
   case '*': result = first * second;
     break;
-  default: break;
+  default: result = 'Invalid Operator';
+    break;
   } if (children) {
     return children(first, second, result);
   }
@@ -28,8 +29,7 @@ const Text = (props) => {
         {operator}
         {' '}
         {second}
-        {' '}
-=
+        {' '}=
         {' '}
         {result}
         {' '}
@@ -41,7 +41,7 @@ Text.propTypes = {
   first: PropTypes.number.isRequired,
   second: PropTypes.number.isRequired,
   operator: PropTypes.string.isRequired,
-  result: PropTypes.number.isRequired,
+  // result: PropTypes.number.isRequired,
   children: PropTypes.func,
 };
 Text.defaultProps = {

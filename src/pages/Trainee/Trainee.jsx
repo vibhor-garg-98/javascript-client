@@ -1,41 +1,18 @@
-import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import AddDialog from './components/AddDialog/AddDialog';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import TraineeList from './TraineeList';
+import TraineeDetail from './TraineeDetail';
 
-class Trainee extends Component {
-  constructor(props) {
-    super(props);
+const TraineeRoute = (props) => {
+  const { match: { path } } = props;
+  return (
+    <Router>
+      <Switch>
+        <Route exact path={path} component={TraineeList} />
+        <Route exact path={`${path}/:TraineeId`} component={TraineeDetail} />
+      </Switch>
+    </Router>
+  );
+};
 
-    this.state = {
-      open: false,
-    }
-  }
-
-  onClick = () => {
-    this.setState({ open: true }, () => { console.log(this.state) });
-  }
-
-  onClose = () => {
-    this.setState({ open: false }, () => { console.log(this.state) })
-  }
-
-  onSubmit = (data) => {
-
-    this.setState({ open: false }, () => { console.log(data) });
-  }
-
-  render() {
-    const { open } = this.state;
-    return (
-      <>
-
-        <Button variant="outlined" color="primary" onClick={this.onClick}>
-          ADD TRAINEE
-        </Button>
-        <AddDialog onClose={this.onClose} onSubmit={() => this.onSubmit} open={open} />
-      </>
-    )
-  }
-}
-
-export default Trainee;
+export default TraineeRoute;

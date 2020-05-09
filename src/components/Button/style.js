@@ -15,6 +15,20 @@ export const Buttons = styled.button`
       cursor: pointer;
       border-radius: 6px;
     `};
+  ${(props) => props.type === 'Back'
+    && css`
+      background-color: lightgrey;
+      border: none;
+      color: black;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 6px;
+    `};
   ${(props) => props.disabled === true
     && props.type === 'submit'
     && css`
