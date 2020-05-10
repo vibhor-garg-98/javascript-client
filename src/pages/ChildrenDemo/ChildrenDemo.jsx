@@ -13,20 +13,7 @@ const CalculatorDemo = () => (
     <Text first={7} second={4} operator="+">
       {
         (first, second, result) => (
-          <p>
-            Sum of
-            {' '}
-            {first}
-            {' '}
-            and
-            {' '}
-            {second}
-            {' '}
-            is equal to
-            {' '}
-            {result}
-            {' '}
-          </p>
+          `Sum of ${first} and ${second} is equal to ${result}`
         )
       }
     </Text>
@@ -35,20 +22,7 @@ const CalculatorDemo = () => (
         <Text first={3} second={4} operator="+">
           {
             (first, second, result) => (
-              <>
-                Sum of
-                {' '}
-                {first}
-                {' '}
-                and
-                {' '}
-                {second}
-                {' '}
-                is equal to
-                {' '}
-                {result}
-                {' '}
-              </>
+              `Sum of ${first} and ${second} is equal to ${result}`
             )
           }
         </Text>
