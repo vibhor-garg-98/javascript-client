@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider, Typography } from '@material-ui/core';
 import Text from '../../components/Math/Math';
-import Theme from '../../theme';
+import Theme from '..
 
 const CalculatorDemo = () => (
   <>
