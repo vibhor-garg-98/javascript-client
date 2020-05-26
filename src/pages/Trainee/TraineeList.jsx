@@ -65,11 +65,10 @@ class Trainee extends Component {
             ]
           }
         />
-        <AddDialog
-          onClose={() => this.openDialog(false)}
-          onSubmit={() => this.onSubmit}
-          open={open}
-        />
+        <Button variant="outlined" color="primary" onClick={() => this.openDialog(true)}>
+          ADD TRAINEE
+        </Button>
+        <AddDialog onClose={() => this.openDialog(false)} onSubmit={() => this.onSubmit} open={open} />
         <ul>
           {
             trainee && trainee.length && trainee.map((element) => (
