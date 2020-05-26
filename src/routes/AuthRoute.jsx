@@ -1,15 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import AuthLayout from '../layouts/AuthLayout/AuthLayout';
 
-const AuthRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route {...rest} render={matchProps => (
+const AuthRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(matchProps) => (
       <AuthLayout>
         <Component {...matchProps} />
       </AuthLayout>
-    )} />
-  )
+    )}
+  />
+);
+
+AuthRoute.propTypes = {
+  component: PropTypes.elementType.isRequired,
 };
 
-export default AuthRoute
+export default AuthRoute;

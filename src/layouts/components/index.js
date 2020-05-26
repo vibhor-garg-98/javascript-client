@@ -1,4 +1,4 @@
-import Footer from '../components/Footer/index';
-import Navbar from '../components/Navbar/index';
+import Footer from './Footer/index';
+import Navbar from './Navbar/index';
 
 export { Footer, Navbar };

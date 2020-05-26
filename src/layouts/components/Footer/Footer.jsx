@@ -5,9 +5,9 @@ import CopyrightIcon from '@material-ui/icons/Copyright';
 const Footer = () => (
   <footer align="center">
     <Icon>
-      <p style={{fontSize: "17px", color: "grey"}}>
-      <CopyrightIcon/>
-      Successive Technologies
+      <p style={{ fontSize: '17px', color: 'grey' }}>
+        <CopyrightIcon />
+        Successive Technologies
       </p>
     </Icon>
   </footer>

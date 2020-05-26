@@ -69,6 +69,7 @@ class Trainee extends Component {
           ADD TRAINEE
         </Button>
         <AddDialog onClose={() => this.openDialog(false)} onSubmit={() => this.onSubmit} open={open} />
+
         <ul>
           {
             trainee && trainee.length && trainee.map((element) => (
@@ -84,7 +85,9 @@ class Trainee extends Component {
     );
   }
 }
+       
 Trainee.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
+
 export default withStyles(useStyles)(Trainee);

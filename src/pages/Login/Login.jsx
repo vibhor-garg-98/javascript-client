@@ -7,13 +7,14 @@ import {
   Container,
   Typography,
   InputAdornment,
-  Box
+  Box,
 } from '@material-ui/core';
 
 import * as yup from 'yup';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import EmailIcon from '@material-ui/icons/Email';
+import PropTypes from 'prop-types';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
@@ -118,7 +119,7 @@ class Login extends Component {
     const {
       email, password, hasError, error,
     } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
     this.hasErrors();
     return (
       <Container component="main" maxWidth="xs">
@@ -130,7 +131,7 @@ class Login extends Component {
             </Avatar>
             <Typography component="h1" variant="h4">
               Log in
-          </Typography>
+            </Typography>
             <form className={classes.form} noValidate>
               <TextField
                 label="Email Address"
@@ -172,7 +173,7 @@ class Login extends Component {
                 disabled={hasError}
               >
                 Sign In
-            </Button>
+              </Button>
             </form>
           </div>
         </Box>
@@ -180,5 +181,9 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+};
 
 export default withStyles(useStyles)(Login);
