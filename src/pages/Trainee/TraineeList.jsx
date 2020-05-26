@@ -1,8 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import AddDialog from './components/AddDialog/AddDialog';
 import trainee from './data/trainee';
+import Table from './components/Table/Table';
+
+
+const useStyles = (theme) => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    margin: theme.spacing(2, 0, 2),
+  },
+});
 
 class Trainee extends Component {
   constructor(props) {
@@ -27,9 +39,32 @@ class Trainee extends Component {
 
   render() {
     const { open } = this.state;
+    const { classes } = this.props;
 
     return (
       <>
+        <div className={classes.root}>
+          <Button variant="outlined" color="primary" onClick={() => this.openDialog(true)}>
+            ADD TRAINEE
+          </Button>
+        </div>
+        <Table
+          id="id"
+          data={trainee}
+          columns={
+            [
+              {
+                field: 'name',
+                label: 'Name',
+                align: 'center',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+              },
+            ]
+          }
+        />
         <Button variant="outlined" color="primary" onClick={() => this.openDialog(true)}>
           ADD TRAINEE
         </Button>
@@ -37,9 +72,11 @@ class Trainee extends Component {
         <ul>
           {
             trainee && trainee.length && trainee.map((element) => (
-              <li>
-                <Link to={`/Trainee/${element.id}`}>{element.name}</Link>
-              </li>
+              <Fragment key={element.id}>
+                <li key={element.id}>
+                  <Link to={`/Trainee/${element.id}`}>{element.name}</Link>
+                </li>
+              </Fragment>
             ))
           }
         </ul>
@@ -47,5 +84,7 @@ class Trainee extends Component {
     );
   }
 }
-
-export default Trainee;
+Trainee.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+};
+export default withStyles(useStyles)(Trainee);
