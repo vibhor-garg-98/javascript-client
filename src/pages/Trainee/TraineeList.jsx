@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import AddDialog from './components/AddDialog/AddDialog';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import trainee from './data/trainee';
-import Table from './components/Table/Table';
+import AddDialog, { EditDialog, RemoveDialog, Table } from './components/index';
 
 const useStyles = (theme) => ({
   root: {
@@ -22,9 +23,13 @@ class Trainee extends Component {
 
     this.state = {
       open: false,
-      selected: '',
+      EditOpen: false,
+      RemoveOpen: false,
       orderBy: '',
-      order: '',
+      order: 'asc',
+      page: 0,
+      rowsPerPage: 3,
+      newData: {},
     };
   }
 
@@ -33,7 +38,7 @@ class Trainee extends Component {
   };
 
   onSubmit = (data) => {
-    this.setState({ open: false }, () => { console.log(data); });
+    this.setState({ open: false, EditOpen: false }, () => { console.log('Submit Item', data); });
   };
 
   handleSort = (field) => () => {
@@ -44,16 +49,47 @@ class Trainee extends Component {
     });
   }
 
-  handleSelect = (event, data) => {
-    this.setState({ selected: event.target.value }, () => console.log(data));
+  handleSelect = (data) => {
+    console.log(data);
+  };
+
+  handleClose = (data, status) => {
+    this.setState({ EditOpen: status, RemoveOpen: status });
+  };
+
+  handleDeleteClick = (values) => {
+    this.setState({ RemoveOpen: false });
+    console.log('Deleted Items', values.data);
+  }
+
+  handleEditDialogOpen = (data) => {
+    this.setState({ EditOpen: true, newData: data });
+  }
+
+  handleRemoveDialogOpen = (data) => {
+    this.setState({ RemoveOpen: true, newData: data });
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage,
+    });
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage: event.target.value,
+      page: 0,
+
+    });
   };
 
   Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
 
-  Convert = (email) => email.toUpperCase()
-
   render() {
-    const { open, order, orderBy } = this.state;
+    const {
+      open, order, orderBy, page, rowsPerPage, EditOpen, RemoveOpen, newData,
+    } = this.state;
     const { classes } = this.props;
 
     return (
@@ -81,20 +117,47 @@ class Trainee extends Component {
               {
                 field: 'createdAt',
                 label: 'Date',
-                align: 'right',
                 format: this.Format,
               },
             ]
           }
+          action={[
+            {
+              icon: <EditIcon />,
+              handler: this.handleEditDialogOpen,
+            },
+            {
+              icon: <DeleteIcon />,
+              handler: this.handleRemoveDialogOpen,
+            },
+          ]}
           orderBy={orderBy}
           order={order}
           onSort={this.handleSort}
           onSelect={this.handleSelect}
+          count={100}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          onChangePage={this.handleChangePage}
         />
         <AddDialog
+          data={newData}
           onClose={() => this.openDialog(false)}
           onSubmit={() => this.onSubmit}
           open={open}
+        />
+        <EditDialog
+          data={newData}
+          onClose={() => this.handleClose(false)}
+          onSubmit={this.onSubmit}
+          open={EditOpen}
+        />
+        <RemoveDialog
+          data={newData}
+          onClose={() => this.handleClose(false)}
+          onSubmit={this.handleDeleteClick}
+          open={RemoveOpen}
         />
 
         <ul>
@@ -115,13 +178,6 @@ class Trainee extends Component {
 
 Trainee.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']),
-  orderBy: PropTypes.string,
 };
-Trainee.defaultProps = {
-  orderBy: '',
-  order: 'asc',
-};
-
 
 export default withStyles(useStyles)(Trainee);
