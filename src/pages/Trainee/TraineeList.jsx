@@ -9,6 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import trainee from './data/trainee';
 import AddDialog, { EditDialog, RemoveDialog, Table } from './components/index';
 
+
 const useStyles = (theme) => ({
   root: {
     display: 'flex',
@@ -59,7 +60,7 @@ class Trainee extends Component {
 
   handleDeleteClick = (values) => {
     this.setState({ RemoveOpen: false });
-    console.log('Deleted Items', values.data);
+    console.log('Deleted Items', values);
   }
 
   handleEditDialogOpen = (data) => {

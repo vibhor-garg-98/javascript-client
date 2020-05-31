@@ -13,24 +13,27 @@ import InputDemo from './pages/InputDemo/InputDemo';
 import PrivateRoute from './routes/PrivateRoute';
 import AuthRoute from './routes/AuthRoute';
 import NoMatch from './pages/NoMatch/NoMatch';
+import SnackBarProvider from './contexts';
 
 function App() {
   return (
     <div>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/Trainee" />
-          </Route>
-          <AuthRoute path="/Login" component={Login} />
-          <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
-          <PrivateRoute path="/Trainee" component={Trainee} />
-          <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
-          <PrivateRoute path="/InputDemo" component={InputDemo} />
-          <PrivateRoute component={NoMatch} />
+      <SnackBarProvider>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/Trainee" />
+            </Route>
+            <AuthRoute path="/Login" component={Login} />
+            <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
+            <PrivateRoute path="/Trainee" component={Trainee} />
+            <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
+            <PrivateRoute path="/InputDemo" component={InputDemo} />
+            <PrivateRoute component={NoMatch} />
 
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
+      </SnackBarProvider>
     </div>
   );
 }
