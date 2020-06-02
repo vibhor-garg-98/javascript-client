@@ -3,10 +3,10 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 import AddDialog from './components/AddDialog/AddDialog';
 import trainee from './data/trainee';
 import Table from './components/Table/Table';
-
 
 const useStyles = (theme) => ({
   root: {
@@ -22,6 +22,9 @@ class Trainee extends Component {
 
     this.state = {
       open: false,
+      selected: '',
+      orderBy: '',
+      order: '',
     };
   }
 
@@ -29,16 +32,28 @@ class Trainee extends Component {
     this.setState({ open: status });
   };
 
-  // onClose = () => {
-  //   this.setState({ open: false }, () => { console.log(this.state); });
-  // };
-
   onSubmit = (data) => {
     this.setState({ open: false }, () => { console.log(data); });
   };
 
+  handleSort = (field) => () => {
+    const { order } = this.state;
+    this.setState({
+      orderBy: field,
+      order: order === 'asc' ? 'desc' : 'asc',
+    });
+  }
+
+  handleSelect = (event, data) => {
+    this.setState({ selected: event.target.value }, () => console.log(data));
+  };
+
+  Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+
+  Convert = (email) => email.toUpperCase()
+
   render() {
-    const { open } = this.state;
+    const { open, order, orderBy } = this.state;
     const { classes } = this.props;
 
     return (
@@ -61,14 +76,26 @@ class Trainee extends Component {
               {
                 field: 'email',
                 label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: this.Format,
               },
             ]
           }
+          orderBy={orderBy}
+          order={order}
+          onSort={this.handleSort}
+          onSelect={this.handleSelect}
         />
-        <Button variant="outlined" color="primary" onClick={() => this.openDialog(true)}>
-          ADD TRAINEE
-        </Button>
-        <AddDialog onClose={() => this.openDialog(false)} onSubmit={() => this.onSubmit} open={open} />
+        <AddDialog
+          onClose={() => this.openDialog(false)}
+          onSubmit={() => this.onSubmit}
+          open={open}
+        />
 
         <ul>
           {
@@ -85,9 +112,16 @@ class Trainee extends Component {
     );
   }
 }
-       
+
 Trainee.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']),
+  orderBy: PropTypes.string,
 };
+Trainee.defaultProps = {
+  orderBy: '',
+  order: 'asc',
+};
+
 
 export default withStyles(useStyles)(Trainee);
