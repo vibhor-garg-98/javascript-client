@@ -5,6 +5,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
+import ls from 'local-storage';
 import ChildrenDemo from './pages/ChildrenDemo/ChildrenDemo';
 import Trainee from './pages/Trainee/Trainee';
 import Login from './pages/Login/Login';
@@ -19,20 +20,37 @@ function App() {
   return (
     <div>
       <SnackBarProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/Trainee" />
-            </Route>
-            <AuthRoute path="/Login" component={Login} />
-            <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
-            <PrivateRoute path="/Trainee" component={Trainee} />
-            <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
-            <PrivateRoute path="/InputDemo" component={InputDemo} />
-            <PrivateRoute component={NoMatch} />
+        {ls.get('token') ? (
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/Trainee" />
+              </Route>
+              <AuthRoute path="/Login" component={Login} />
+              <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
+              <PrivateRoute path="/Trainee" component={Trainee} />
+              <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
+              <PrivateRoute path="/InputDemo" component={InputDemo} />
+              <PrivateRoute component={NoMatch} />
 
-          </Switch>
-        </Router>
+            </Switch>
+          </Router>
+        ) : (
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/Login" />
+              </Route>
+              <AuthRoute path="/Login" component={Login} />
+              <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
+              <PrivateRoute path="/Trainee" component={Trainee} />
+              <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
+              <PrivateRoute path="/InputDemo" component={InputDemo} />
+              <PrivateRoute component={NoMatch} />
+
+            </Switch>
+          </Router>
+        )}
       </SnackBarProvider>
     </div>
   );

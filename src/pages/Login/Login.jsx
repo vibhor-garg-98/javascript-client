@@ -9,17 +9,22 @@ import {
   InputAdornment,
   Box,
 } from '@material-ui/core';
-
 import * as yup from 'yup';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import EmailIcon from '@material-ui/icons/Email';
 import PropTypes from 'prop-types';
+import ls from 'local-storage';
+import { Redirect } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import callApi from '../../lib/utils/callApi';
+import { MyContext } from '../../contexts';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
-  password: yup.string().required('Password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
-    'Must contain 8 characters at least one uppercase one lowercase and one number'),
+  password: yup.string().required('Password is required')
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      'Must contain 8 characters at least one uppercase one lowercase and one number'),
 });
 
 const useStyles = (theme) => ({
@@ -51,6 +56,9 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      message: '',
+      loading: false,
+      redirect: false,
       hasError: false,
       error: {
         email: '',
@@ -66,6 +74,35 @@ class Login extends Component {
   handleChange = (prop) => (e) => {
     this.setState({ [prop]: e.target.value });
   };
+
+  renderRedirect = () => {
+    const { redirect } = this.state;
+    if (redirect) {
+      return <Redirect to="/Trainee" />;
+    }
+  }
+
+  onClickHandler = async (data, openSnackBar) => {
+    this.setState({
+      loading: true,
+      hasError: true,
+    });
+    await callApi('post', '/user/login', data);
+    this.setState({ loading: false });
+    if (ls.get('token')) {
+      this.setState({
+        redirect: true,
+        hasError: false,
+      });
+    } else {
+      this.setState({
+        message: 'Invalid email and Password',
+      }, () => {
+        const { message } = this.state;
+        openSnackBar(message, 'error');
+      });
+    }
+  }
 
   hasErrors = () => {
     const { hasError } = this.state;
@@ -114,10 +151,18 @@ class Login extends Component {
     return error[field];
   }
 
+  formReset = () => {
+    this.setState({
+      email: '',
+      password: '',
+      touched: {},
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const {
-      email, password, hasError, error,
+      email, password, hasError, error, loading,
     } = this.state;
     // console.log(this.state);
     this.hasErrors();
@@ -164,16 +209,29 @@ class Login extends Component {
                 }}
                 variant="outlined"
               />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                disabled={hasError}
-              >
-                Sign In
-              </Button>
+              <MyContext.Consumer>
+                {({ openSnackBar }) => (
+                  <Button
+                    // type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={hasError}
+                    onClick={() => {
+                      this.onClickHandler({ email, password }, openSnackBar);
+                      this.formReset();
+                    }}
+                  >
+                    {loading && (
+                      <CircularProgress size={15} />
+                    )}
+                    {loading && <span>Signing in</span>}
+                    {!loading && <span>Sign in</span>}
+                    {this.renderRedirect()}
+                  </Button>
+                )}
+              </MyContext.Consumer>
             </form>
           </div>
         </Box>
