@@ -82,14 +82,29 @@ class Login extends Component {
     }
   }
 
-  onClickHandler = async (data, openSnackBar) => {
+  onClickHandler = async (Data, openSnackBar) => {
     this.setState({
       loading: true,
       hasError: true,
     });
-    await callApi('post', '/user/login', data);
+
+    const response = await callApi(
+      'post',
+      '/user/login',
+      {
+        data: Data,
+        headers: {
+          Authorization: ls.get('token'),
+        },
+      },
+    );
+    ls.set('token', response.data);
+
     this.setState({ loading: false });
-    if (ls.get('token')) {
+
+    const TokenGen = ls.get('token');
+
+    if (TokenGen !== 'undefined') {
       this.setState({
         redirect: true,
         hasError: false,
