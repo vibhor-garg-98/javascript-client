@@ -93,7 +93,7 @@ class Trainee extends Component {
     });
   };
 
-  Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+  handleFormat = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
 
   componentDidMount = (newPage) => {
     const { rowsPerPage } = this.state;
@@ -154,7 +154,7 @@ class Trainee extends Component {
               {
                 field: 'createdAt',
                 label: 'Date',
-                format: this.Format,
+                format: this.handleFormat,
               },
             ]
           }

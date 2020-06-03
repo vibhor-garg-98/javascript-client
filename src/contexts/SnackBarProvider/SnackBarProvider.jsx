@@ -49,7 +49,7 @@ export default class SnackBarProvider extends React.Component {
     );
   }
 }
-// eslint-disable-next-line react/jsx-props-no-spreading
+
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
 const CustomizedSnackbars = () => {
