@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import {
   withStyles, createStyles, makeStyles,
 } from '@material-ui/core/styles';
+import withLoaderAndMessage from '../../../../components/HOC/withLoaderAndMessage';
 
 const StyledTableRow = withStyles((theme) => createStyles({
   root: {
@@ -66,7 +67,10 @@ const SimpleTable = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element) => (
+          {(rowsPerPage > 0
+            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : data
+          ).map((element) => (
             <StyledTableRow hover key={element[id]}>
               {columns && columns.length && columns.map(({ field, align, format }) => (
                 <TableCell
@@ -91,7 +95,7 @@ const SimpleTable = (props) => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[3, 5, 7, 10, 15, 25, 100, { label: 'All', value: -1 }]}
+              rowsPerPageOptions={[0]}
               count={count}
               SelectProps={{
                 inputProps: { 'aria-label': 'rows per page' },
@@ -109,7 +113,8 @@ const SimpleTable = (props) => {
   );
 };
 
-export default SimpleTable;
+export default withLoaderAndMessage(SimpleTable);
+
 
 SimpleTable.propTypes = {
   id: PropTypes.string.isRequired,
