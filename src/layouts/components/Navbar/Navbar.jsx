@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import ls from 'local-storage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +33,7 @@ export default function Navbar() {
           <Button component={Link} to="/TextFieldDemo" color="inherit">TextFieldDemo</Button>
           <Button component={Link} to="/InputDemo" color="inherit">InputDemo</Button>
           <Button component={Link} to="/ChildrenDemo" color="inherit" className={classes.spacing}>ChildrenDemo</Button>
-          <Button color="inherit">Logout</Button>
+          <Button component={Link} to="/Login" onClick={() => { ls.clear('token'); }} color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
     </div>

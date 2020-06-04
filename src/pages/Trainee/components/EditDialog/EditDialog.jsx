@@ -14,6 +14,7 @@ import {
   Button,
   Grid,
 } from '@material-ui/core';
+import { MyContext } from '../../../../contexts';
 
 const useStyles = () => ({
   root: {
@@ -149,13 +150,21 @@ class EditDialog extends Component {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <Button
-            disabled={!isValid}
-            onClick={() => { onSubmit({ name, email }); this.formReset(); }}
-            color="primary"
-          >
-            Submit
-          </Button>
+          <MyContext.Consumer>
+            {({ openSnackBar }) => (
+              <Button
+                disabled={!isValid}
+                onClick={() => {
+                  onSubmit({ name, email });
+                  this.formReset();
+                  openSnackBar('This is a success message ! ', 'success');
+                }}
+                color="primary"
+              >
+                Submit
+              </Button>
+            )}
+          </MyContext.Consumer>
         </DialogActions>
       </Dialog>
     );

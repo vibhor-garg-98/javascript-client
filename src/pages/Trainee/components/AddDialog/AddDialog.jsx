@@ -16,6 +16,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Grid from '@material-ui/core/Grid';
+import { MyContext } from '../../../../contexts';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required').min(3),
@@ -196,16 +197,23 @@ class AddDialog extends Component {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => onSubmit()({
-              name, email, password, confirmPassword,
-            })}
-            disabled={hasError}
-          >
-            Submit
-          </Button>
+          <MyContext.Consumer>
+            {({ openSnackBar }) => (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  openSnackBar('This is a success message ! ', 'success');
+                  onSubmit()({
+                    name, email, password, confirmPassword,
+                  });
+                }}
+                disabled={hasError}
+              >
+                Submit
+              </Button>
+            )}
+          </MyContext.Consumer>
         </DialogActions>
       </Dialog>
     );

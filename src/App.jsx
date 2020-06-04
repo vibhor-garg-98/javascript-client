@@ -5,6 +5,7 @@ import {
   Redirect,
   Switch,
 } from 'react-router-dom';
+import ls from 'local-storage';
 import ChildrenDemo from './pages/ChildrenDemo/ChildrenDemo';
 import Trainee from './pages/Trainee/Trainee';
 import Login from './pages/Login/Login';
@@ -13,24 +14,44 @@ import InputDemo from './pages/InputDemo/InputDemo';
 import PrivateRoute from './routes/PrivateRoute';
 import AuthRoute from './routes/AuthRoute';
 import NoMatch from './pages/NoMatch/NoMatch';
+import SnackBarProvider from './contexts';
 
 function App() {
   return (
     <div>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/Trainee" />
-          </Route>
-          <AuthRoute path="/Login" component={Login} />
-          <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
-          <PrivateRoute path="/Trainee" component={Trainee} />
-          <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
-          <PrivateRoute path="/InputDemo" component={InputDemo} />
-          <PrivateRoute component={NoMatch} />
+      <SnackBarProvider>
+        {ls.get('token') ? (
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/Trainee" />
+              </Route>
+              <AuthRoute path="/Login" component={Login} />
+              <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
+              <PrivateRoute path="/Trainee" component={Trainee} />
+              <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
+              <PrivateRoute path="/InputDemo" component={InputDemo} />
+              <PrivateRoute component={NoMatch} />
 
-        </Switch>
-      </Router>
+            </Switch>
+          </Router>
+        ) : (
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/Login" />
+              </Route>
+              <AuthRoute path="/Login" component={Login} />
+              <PrivateRoute path="/ChildrenDemo" component={ChildrenDemo} />
+              <PrivateRoute path="/Trainee" component={Trainee} />
+              <PrivateRoute path="/TextFieldDemo" component={TextFieldDemo} />
+              <PrivateRoute path="/InputDemo" component={InputDemo} />
+              <PrivateRoute component={NoMatch} />
+
+            </Switch>
+          </Router>
+        )}
+      </SnackBarProvider>
     </div>
   );
 }
