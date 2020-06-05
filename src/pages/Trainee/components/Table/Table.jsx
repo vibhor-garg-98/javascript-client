@@ -49,10 +49,10 @@ const SimpleTable = (props) => {
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow hover key={id}>
+          <TableRow key={id}>
             <>
               {columns && columns.length && columns.map(({ align, label, field }) => (
-                <TableCell align={align} className={classes.column}>
+                <TableCell key={label} align={align} className={classes.column}>
                   <TableSortLabel
                     align={align}
                     active={orderBy === field}
@@ -73,6 +73,7 @@ const SimpleTable = (props) => {
                 <StyledTableRow hover key={element.originalId}>
                   {columns && columns.length && columns.map(({ field, align, format }) => (
                     <TableCell
+                      key={field}
                       align={align}
                       onClick={() => onSelect(element.name)}
                       component="th"
@@ -81,8 +82,9 @@ const SimpleTable = (props) => {
                       {format !== undefined ? format(element[field]) : element[field]}
                     </TableCell>
                   ))}
-                  {action && action.length && action.map(({ icon, handler }) => (
+                  {action && action.length && action.map(({ icon, handler, label }) => (
                     <TableCell
+                      key={label}
                       onClick={() => handler(element)}
                     >
                       {icon}

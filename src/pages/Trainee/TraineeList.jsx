@@ -176,10 +176,12 @@ class Trainee extends Component {
           }
           action={[
             {
+              label: 'editIcon',
               icon: <EditIcon />,
               handler: this.handleEditDialogOpen,
             },
             {
+              label: 'deleteIcon',
               icon: <DeleteIcon />,
               handler: this.handleRemoveDialogOpen,
             },
