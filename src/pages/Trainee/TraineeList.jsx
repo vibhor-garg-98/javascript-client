@@ -10,6 +10,7 @@ import ls from 'local-storage';
 import trainee from './data/trainee';
 import AddDialog, { EditDialog, RemoveDialog, Table } from './components/index';
 import callApi from '../../lib/utils/callApi';
+import { MyContext } from '../../contexts';
 
 const useStyles = (theme) => ({
   root: {
@@ -43,10 +44,6 @@ class Trainee extends Component {
     this.setState({ open: status });
   };
 
-  onSubmit = (data) => {
-    this.setState({ open: false, EditOpen: false }, () => { console.log('Submit Item', data); });
-  };
-
   handleSort = (field) => () => {
     const { order } = this.state;
     this.setState({
@@ -59,25 +56,32 @@ class Trainee extends Component {
     console.log(data);
   };
 
-  handleClose = (data, status) => {
+  handleClose = (status) => {
     this.setState({ EditOpen: status, RemoveOpen: status });
   };
 
-  handleDeleteClick = (values) => {
+  handleDeleteClick = () => {
+    const { page, rowsPerPage, count } = this.state;
     this.setState({ RemoveOpen: false });
-    console.log('Deleted Items', values);
-  }
+    if (count - page * rowsPerPage !== 1) {
+      this.handleTable(page);
+    } else if (page !== 0) {
+      this.handleTable(page - 1);
+      this.setState({ page: page - 1 });
+    } else {
+      this.handleTable(page);
+    }
+  };
 
-  handleEditDialogOpen = (data) => {
-    this.setState({ EditOpen: true, newData: data });
-  }
 
   handleRemoveDialogOpen = (data) => {
     this.setState({ RemoveOpen: true, newData: data });
   }
 
+  Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+
   handleChangePage = (event, newPage) => {
-    this.componentDidMount(newPage);
+    this.handleTable(newPage);
     this.setState({
       page: newPage,
       loading: true,
@@ -85,7 +89,6 @@ class Trainee extends Component {
   };
 
   handleChangeRowsPerPage = (event) => {
-    this.componentDidMount();
     this.setState({
       rowsPerPage: event.target.value,
       page: 0,
@@ -93,16 +96,25 @@ class Trainee extends Component {
     });
   };
 
-  Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
+  handleEditDialogOpen = (data) => {
+    this.setState({ EditOpen: true, newData: data });
+  }
 
-  componentDidMount = (newPage) => {
+  onSubmit = () => {
+    const { page } = this.state;
+    this.setState({ open: false, EditOpen: false, loading: true }, () => {
+      this.handleTable(page);
+    });
+  };
+
+  handleTable = (newPage) => {
     const { rowsPerPage } = this.state;
     const value = this.context;
     callApi(
       'get',
       '/trainee',
       {
-        params: { skip: newPage * rowsPerPage, limit: newPage * rowsPerPage + rowsPerPage },
+        params: { skip: newPage * rowsPerPage, limit: rowsPerPage },
         headers: {
           Authorization: ls.get('token'),
         },
@@ -120,6 +132,10 @@ class Trainee extends Component {
         this.setState({ rowData: res.data.records, count: res.data.count, loading: false });
       }
     });
+  }
+
+  componentDidMount = () => {
+    this.handleTable(0);
   }
 
   render() {
@@ -217,5 +233,7 @@ class Trainee extends Component {
 Trainee.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
+
+Trainee.contextType = MyContext;
 
 export default withStyles(useStyles)(Trainee);

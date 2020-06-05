@@ -11,13 +11,6 @@ const withLoaderAndMessage = (Wrapper) => (props) => {
       </Box>
     );
   }
-  if (!count) {
-    return (
-      <Box paddingLeft="50%">
-        <h2>Oops No more Trainees</h2>
-      </Box>
-    );
-  }
   return (<Wrapper loading={loading} count={count} {...rest} />);
 };
 export default withLoaderAndMessage;

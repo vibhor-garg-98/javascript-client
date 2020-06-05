@@ -49,7 +49,7 @@ const SimpleTable = (props) => {
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow hover>
+          <TableRow hover key={id}>
             <>
               {columns && columns.length && columns.map(({ align, label, field }) => (
                 <TableCell align={align} className={classes.column}>
@@ -67,30 +67,42 @@ const SimpleTable = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : data
-          ).map((element) => (
-            <StyledTableRow hover key={element[id]}>
-              {columns && columns.length && columns.map(({ field, align, format }) => (
-                <TableCell
-                  align={align}
-                  onClick={() => onSelect(element.name)}
-                  component="th"
-                  scope="row"
-                >
-                  {format !== undefined ? format(element[field]) : element[field]}
-                </TableCell>
+          {data.length ? (
+            <>
+              {data.map((element) => (
+                <StyledTableRow hover key={element.originalId}>
+                  {columns && columns.length && columns.map(({ field, align, format }) => (
+                    <TableCell
+                      align={align}
+                      onClick={() => onSelect(element.name)}
+                      component="th"
+                      scope="row"
+                    >
+                      {format !== undefined ? format(element[field]) : element[field]}
+                    </TableCell>
+                  ))}
+                  {action && action.length && action.map(({ icon, handler }) => (
+                    <TableCell
+                      onClick={() => handler(element)}
+                    >
+                      {icon}
+                    </TableCell>
+                  ))}
+                </StyledTableRow>
               ))}
-              {action && action.length && action.map(({ icon, handler }) => (
-                <TableCell
-                  onClick={() => handler(element)}
-                >
-                  {icon}
-                </TableCell>
-              ))}
-            </StyledTableRow>
-          ))}
+            </>
+          ) : (
+            <TableRow>
+              <TableCell align="center" colSpan={4}>
+                <div align="center">
+                  <h1>
+                    OOPS!, No More Trainees
+                  </h1>
+                </div>
+              </TableCell>
+
+            </TableRow>
+          )}
         </TableBody>
         <TableFooter>
           <TableRow>
