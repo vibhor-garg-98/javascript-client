@@ -78,8 +78,6 @@ class Trainee extends Component {
     this.setState({ RemoveOpen: true, newData: data });
   }
 
-  Format = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
-
   handleChangePage = (event, newPage) => {
     this.handleTable(newPage);
     this.setState({
@@ -99,6 +97,8 @@ class Trainee extends Component {
   handleEditDialogOpen = (data) => {
     this.setState({ EditOpen: true, newData: data });
   }
+
+  handleFormat = (date) => moment(date).format('dddd, MMMM Do YYYY, h:mm:ss a')
 
   onSubmit = () => {
     const { page } = this.state;
@@ -170,7 +170,7 @@ class Trainee extends Component {
               {
                 field: 'createdAt',
                 label: 'Date',
-                format: this.Format,
+                format: this.handleFormat,
               },
             ]
           }

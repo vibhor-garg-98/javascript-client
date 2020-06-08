@@ -103,8 +103,8 @@ class Login extends Component {
 
     this.setState({ loading: false });
 
-    const Token = ls.get('token');
-    if (Token !== 'undefined') {
+    const getToken = ls.get('token');
+    if (getToken !== 'undefined') {
       this.setState({
         redirect: true,
         hasError: false,
