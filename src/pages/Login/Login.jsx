@@ -80,6 +80,7 @@ class Login extends Component {
     if (redirect) {
       return <Redirect to="/Trainee" />;
     }
+    return true;
   }
 
   onClickHandler = async (Data, openSnackBar) => {
@@ -102,9 +103,8 @@ class Login extends Component {
 
     this.setState({ loading: false });
 
-    const TokenGen = ls.get('token');
-
-    if (TokenGen !== 'undefined') {
+    const getToken = ls.get('token');
+    if (getToken !== 'undefined') {
       this.setState({
         redirect: true,
         hasError: false,
@@ -179,7 +179,6 @@ class Login extends Component {
     const {
       email, password, hasError, error, loading,
     } = this.state;
-    // console.log(this.state);
     this.hasErrors();
     return (
       <Container component="main" maxWidth="xs">

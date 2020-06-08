@@ -87,30 +87,6 @@ class InputDemo extends Component {
     return sport === 'cricket' ? radioOptionsCricket : radioOptionsFootball;
   }
 
-  // hasErrors = () => {
-  //   try {
-  //     this.schema.validateSync(this.state);
-  //   } catch (err) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  // isTouched = (field) => {
-  //   const { touched } = this.state;
-  //   this.setState({ touched: { ...touched, [field]: true } });
-  // }
-
-  // getError = (field) => {
-  //   if (this.state.touched[field] && this.hasErrors()) {
-  //     try {
-  //       this.schema.validateSyncAt(field, this.state);
-  //     } catch (err) {
-  //       return err.message;
-  //     }
-  //   }
-  // };
-
   hasErrors = () => {
     const { hasError } = this.state;
     this.schema.isValid(this.state)
@@ -159,7 +135,6 @@ class InputDemo extends Component {
   };
 
   render() {
-    // console.log(this.state);
     const { sport, name } = this.state;
     return (
       <form>
@@ -195,8 +170,8 @@ class InputDemo extends Component {
           )
         }
         <div align="right">
-          <Button value="cancle" />
-          <Button value="submit" disabled={this.hasErrors()} />
+          <Button value="cancle" onClick={() => { console.log(this.state); }} />
+          <Button value="submit" onClick={() => { console.log(this.state); }} disabled={this.hasErrors()} />
         </div>
       </form>
     );
