@@ -17,7 +17,6 @@ import PropTypes from 'prop-types';
 import ls from 'local-storage';
 import { Redirect } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import callApi from '../../lib/utils/callApi';
 import { MyContext } from '../../contexts';
 
 const schema = yup.object().shape({
@@ -84,34 +83,25 @@ class Login extends Component {
   }
 
   onClickHandler = async (Data, openSnackBar) => {
-    this.setState({
-      loading: true,
-      hasError: true,
-    });
+    try {
+      this.setState({
+        loading: true,
+        hasError: true,
+      });
+      const { loginUser } = this.props;
+      const { email, password } = Data;
+      const response = await loginUser({ variables: { email, password } });
+      ls.set('token', response.data.loginUser);
 
-    const response = await callApi(
-      'post',
-      '/user/login',
-      {
-        data: Data,
-        headers: {
-          Authorization: ls.get('token'),
-        },
-      },
-    );
-    ls.set('token', response.data);
-
-    this.setState({ loading: false });
-
-    const getToken = ls.get('token');
-    if (getToken !== 'undefined') {
       this.setState({
         redirect: true,
         hasError: false,
+        loading: false,
       });
-    } else {
+    } catch {
       this.setState({
         message: 'Invalid email and Password',
+        loading: false,
       }, () => {
         const { message } = this.state;
         openSnackBar(message, 'error');
@@ -256,6 +246,7 @@ class Login extends Component {
 
 Login.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  loginUser: PropTypes.func.isRequired,
 };
 
 export default withStyles(useStyles)(Login);
