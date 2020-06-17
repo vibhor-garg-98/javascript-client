@@ -6,11 +6,12 @@ import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ls from 'local-storage';
+import { graphql } from '@apollo/react-hoc';
+import Compose from 'lodash.flowright';
 import trainee from './data/trainee';
 import AddDialog, { EditDialog, RemoveDialog, Table } from './components/index';
-import callApi from '../../lib/utils/callApi';
 import { MyContext } from '../../contexts';
+import GET_TRAINEE from './query';
 
 const useStyles = (theme) => ({
   root: {
@@ -33,10 +34,7 @@ class Trainee extends Component {
       page: 0,
       rowsPerPage: 10,
       newData: {},
-      rowData: [],
       loading: true,
-      count: 0,
-      message: '',
     };
   }
 
@@ -60,16 +58,22 @@ class Trainee extends Component {
     this.setState({ EditOpen: status, RemoveOpen: status });
   };
 
-  handleDeleteClick = () => {
-    const { page, rowsPerPage, count } = this.state;
-    this.setState({ RemoveOpen: false });
+  handleDeleteClick = (refetch) => () => {
+    const { page, rowsPerPage } = this.state;
+    const {
+      data: {
+        getTrainee: { count = 0 } = {},
+      },
+    } = this.props;
+    this.setState({
+      RemoveOpen: false,
+    });
     if (count - page * rowsPerPage !== 1) {
-      this.handleTable(page);
+      refetch({ skip: page * rowsPerPage, limit: rowsPerPage });
     } else if (page !== 0) {
-      this.handleTable(page - 1);
-      this.setState({ page: page - 1 });
+      refetch({ skip: (page - 1) * rowsPerPage, limit: rowsPerPage });
     } else {
-      this.handleTable(page);
+      refetch({ skip: page * rowsPerPage, limit: rowsPerPage });
     }
   };
 
@@ -77,14 +81,6 @@ class Trainee extends Component {
   handleRemoveDialogOpen = (data) => {
     this.setState({ RemoveOpen: true, newData: data });
   }
-
-  handleChangePage = (event, newPage) => {
-    this.handleTable(newPage);
-    this.setState({
-      page: newPage,
-      loading: true,
-    });
-  };
 
   handleChangeRowsPerPage = (event) => {
     this.setState({
@@ -107,43 +103,26 @@ class Trainee extends Component {
     });
   };
 
-  handleTable = (newPage) => {
+  handleTable = (refetch) => async (event, newPage) => {
     const { rowsPerPage } = this.state;
-    const value = this.context;
-    callApi(
-      'get',
-      '/trainee',
-      {
-        params: { skip: newPage * rowsPerPage, limit: rowsPerPage },
-        headers: {
-          Authorization: ls.get('token'),
-        },
-      },
-    ).then((res) => {
-      if (res.data === undefined) {
-        this.setState({
-          loading: false,
-          message: 'This is an error',
-        }, () => {
-          const { message } = this.state;
-          value.openSnackBar(message, 'error');
-        });
-      } else {
-        this.setState({ rowData: res.data.records, count: res.data.count, loading: false });
-      }
-    });
-  }
-
-  componentDidMount = () => {
-    this.handleTable(0);
+    await refetch({ skip: newPage * rowsPerPage, limit: rowsPerPage });
+    this.setState({ page: newPage });
   }
 
   render() {
     const {
       open, order, orderBy, page, rowsPerPage, EditOpen, RemoveOpen,
-      newData, rowData, loading, count,
+      newData,
     } = this.state;
-    const { classes } = this.props;
+    const {
+      classes,
+      data: {
+        getTrainee: { records = [], count = 0 } = {},
+        refetch,
+        loading,
+      },
+    } = this.props;
+
     return (
       <>
         <div className={classes.root}>
@@ -154,7 +133,7 @@ class Trainee extends Component {
 
         <Table
           id="id"
-          data={rowData}
+          data={records}
           columns={
             [
               {
@@ -194,7 +173,7 @@ class Trainee extends Component {
           page={page}
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          onChangePage={this.handleChangePage}
+          onChangePage={this.handleTable(refetch)}
           loading={loading}
         />
         <AddDialog
@@ -212,7 +191,7 @@ class Trainee extends Component {
         <RemoveDialog
           data={newData}
           onClose={() => this.handleClose(false)}
-          onSubmit={this.handleDeleteClick}
+          onSubmit={this.handleDeleteClick(refetch)}
           open={RemoveOpen}
         />
 
@@ -234,8 +213,16 @@ class Trainee extends Component {
 
 Trainee.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  data: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 Trainee.contextType = MyContext;
 
-export default withStyles(useStyles)(Trainee);
+export default Compose(
+  withStyles(useStyles),
+  graphql(GET_TRAINEE, {
+    options: {
+      variables: { skip: 0, limit: 10 },
+    },
+  }),
+)(Trainee);
