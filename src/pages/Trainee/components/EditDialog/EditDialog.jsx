@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ls from 'local-storage';
 import PersonIcon from '@material-ui/icons/Person';
 import EmailIcon from '@material-ui/icons/Email';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,8 +15,6 @@ import {
   Button,
   Grid,
 } from '@material-ui/core';
-import { MyContext } from '../../../../contexts';
-import callApi from '../../../../lib/utils/callApi';
 
 const useStyles = () => ({
   root: {
@@ -32,7 +29,6 @@ class EditDialog extends Component {
       name: '',
       email: '',
       isValid: false,
-      loading: false,
       touched: {},
     };
   }
@@ -88,43 +84,6 @@ class EditDialog extends Component {
     });
   }
 
-  onClickHandler = async (Data, openSnackBar) => {
-    const { onSubmit } = this.props;
-
-    this.setState({
-      loading: true,
-    });
-    const response = await callApi(
-      'put',
-      '/trainee',
-      {
-        data: { ...Data },
-        headers: {
-          Authorization: ls.get('token'),
-        },
-      },
-    );
-    this.setState({ loading: false });
-    if (response.status === 'ok') {
-      this.setState({
-        message: 'This is a success message',
-      }, () => {
-        const { message } = this.state;
-        onSubmit(Data);
-
-        openSnackBar(message, 'success');
-      });
-    } else {
-      this.setState({
-        message: 'This is a error message',
-      }, () => {
-        const { message } = this.state;
-        openSnackBar(message, 'error');
-      });
-    }
-  }
-
-
   formReset = () => {
     this.setState({
       name: '',
@@ -135,13 +94,12 @@ class EditDialog extends Component {
   }
 
   render() {
-    const { classes } = this.props;
     const {
-      open, onClose, data,
+      classes, onSubmit, open, onClose, data, loading: { loading },
     } = this.props;
     const { originalId: id } = data;
     const {
-      name, email, isValid, loading,
+      name, email, isValid,
     } = this.state;
 
     return (
@@ -194,24 +152,22 @@ class EditDialog extends Component {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <MyContext.Consumer>
-            {({ openSnackBar }) => (
-              <Button
-                disabled={!isValid}
-                onClick={() => {
-                  this.onClickHandler({ name, email, id }, openSnackBar);
-                  this.formReset();
-                }}
-                color="primary"
-              >
-                {loading && (
-                  <CircularProgress size={15} color="primary" />
-                )}
-                {loading && <span>Submiting</span>}
-                {!loading && <span>Submit</span>}
-              </Button>
+
+          <Button
+            disabled={!isValid || loading}
+            onClick={() => {
+              onSubmit({ name, email, id });
+              this.formReset();
+            }}
+            color="primary"
+          >
+            {loading && (
+              <CircularProgress size={15} color="primary" />
             )}
-          </MyContext.Consumer>
+            {loading && <span>Submiting</span>}
+            {!loading && <span>Submit</span>}
+          </Button>
+
         </DialogActions>
       </Dialog>
     );
@@ -227,4 +183,5 @@ EditDialog.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   data: PropTypes.objectOf(PropTypes.string).isRequired,
+  loading: PropTypes.bool.isRequired,
 };

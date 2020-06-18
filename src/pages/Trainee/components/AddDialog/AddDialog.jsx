@@ -17,16 +17,16 @@ import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ls from 'local-storage';
-import { MyContext } from '../../../../contexts';
-import callApi from '../../../../lib/utils/callApi';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required').min(3),
   email: yup.string().email().required('Email is required'),
-  password: yup.string().required('Password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
-    'Must contain 8 characters at least one uppercase one lowercase and one number'),
-  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Confirm password is required'),
+  password: yup.string().required('Password is required')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/,
+      'Must contain 8 characters at least one uppercase one lowercase and one number'),
+  confirmPassword: yup.string()
+    .oneOf([yup.ref('password'), null], 'Passwords must match')
+    .required('Confirm password is required'),
 });
 
 const useStyles = () => ({
@@ -43,8 +43,6 @@ class AddDialog extends Component {
       email: '',
       password: '',
       confirmPassword: '',
-      message: '',
-      loading: false,
       hasError: false,
       error: {
         name: '',
@@ -113,42 +111,6 @@ class AddDialog extends Component {
     return error[field];
   }
 
-  onClickHandler = async (Data, openSnackBar) => {
-    this.setState({
-      loading: true,
-      hasError: true,
-    });
-
-    const response = await callApi(
-      'post',
-      '/trainee',
-      {
-        data: Data,
-        headers: {
-          Authorization: ls.get('token'),
-        },
-      },
-    );
-    this.setState({ loading: false, hasError: false });
-    if (response.status === 'ok') {
-      this.setState({
-        hasError: false,
-        message: 'This is a success message',
-      }, () => {
-        const { message } = this.state;
-        openSnackBar(message, 'success');
-      });
-    } else {
-      this.setState({
-        hasError: false,
-        message: 'This is a error message',
-      }, () => {
-        const { message } = this.state;
-        openSnackBar(message, 'error');
-      });
-    }
-  }
-
   formReset = () => {
     this.setState({
       name: '',
@@ -160,10 +122,11 @@ class AddDialog extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { open, onClose, onSubmit } = this.props;
     const {
-      name, email, password, confirmPassword, hasError, error, loading,
+      classes, open, onClose, onSubmit, loading: { loading },
+    } = this.props;
+    const {
+      name, email, password, confirmPassword, hasError, error,
     } = this.state;
     this.hasErrors();
     return (
@@ -247,28 +210,23 @@ class AddDialog extends Component {
           <Button onClick={onClose} color="primary">
             Cancel
           </Button>
-          <MyContext.Consumer>
-            {({ openSnackBar }) => (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  onSubmit()({
-                    name, email, password, confirmPassword,
-                  });
-                  this.onClickHandler({ name, email, password }, openSnackBar);
-                  this.formReset();
-                }}
-                disabled={hasError}
-              >
-                {loading && (
-                  <CircularProgress size={15} />
-                )}
-                {loading && <span>Submiting</span>}
-                {!loading && <span>Submit</span>}
-              </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              onSubmit({
+                name, email, password, confirmPassword,
+              });
+              this.formReset();
+            }}
+            disabled={hasError || loading}
+          >
+            {loading && (
+              <CircularProgress size={15} />
             )}
-          </MyContext.Consumer>
+            {loading && <span>Submiting</span>}
+            {!loading && <span>Submit</span>}
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -282,5 +240,6 @@ AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
