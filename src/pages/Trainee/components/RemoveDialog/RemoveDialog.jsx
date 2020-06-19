@@ -7,61 +7,17 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
-import * as moment from 'moment';
-import ls from 'local-storage';
-import { MyContext } from '../../../../contexts';
-import callApi from '../../../../lib/utils/callApi';
 
 class RemoveDialog extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      message: '',
-      loading: false,
-    };
-  }
-
-  onClickHandler = async (Data, openSnackBar) => {
-    const { onSubmit } = this.props;
-    const date = '2019-02-14T18:15:11.778Z';
-    const isAfter = (moment(Data.createdAt).isAfter(date));
-    this.setState({
-      loading: true,
-    });
-
-    const response = await callApi(
-      'delete',
-      `/trainee/${Data}`,
-      {
-        headers: {
-          Authorization: ls.get('token'),
-        },
-      },
-    );
-    this.setState({ loading: false });
-    if (response.status === 'ok' && isAfter) {
-      this.setState({
-        message: 'This is a success message',
-      }, () => {
-        const { message } = this.state;
-        openSnackBar(message, 'success');
-        onSubmit(Data);
-      });
-    } else {
-      this.setState({
-        message: 'This is a error message',
-      }, () => {
-        const { message } = this.state;
-        openSnackBar(message, 'error');
-      });
-    }
+    this.state = {};
   }
 
   render = () => {
     const {
-      onClose, open, data,
+      onClose, open, data, onSubmit, loading: { loading },
     } = this.props;
-    const { loading } = this.state;
     const { originalId: id } = data;
     return (
       <div>
@@ -76,23 +32,21 @@ class RemoveDialog extends React.Component {
             <Button onClick={onClose} color="primary">
               Cancel
             </Button>
-            <MyContext.Consumer>
-              {({ openSnackBar }) => (
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => {
-                    this.onClickHandler(id, openSnackBar);
-                  }}
-                >
-                  {loading && (
-                    <CircularProgress size={15} color="inherit" />
-                  )}
-                  {loading && <span>Deleting</span>}
-                  {!loading && <span>Delete</span>}
-                </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                onSubmit({ id });
+              }}
+              disabled={loading}
+            >
+              {loading && (
+                <CircularProgress size={15} color="inherit" />
               )}
-            </MyContext.Consumer>
+              {loading && <span>Deleting</span>}
+              {!loading && <span>Delete</span>}
+            </Button>
+
           </DialogActions>
         </Dialog>
       </div>
@@ -105,5 +59,6 @@ RemoveDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
   data: PropTypes.objectOf(PropTypes.string).isRequired,
 };
