@@ -240,6 +240,6 @@ AddDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.objectOf(PropTypes.any).isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
 };
