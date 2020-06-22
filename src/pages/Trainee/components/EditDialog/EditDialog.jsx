@@ -183,5 +183,5 @@ EditDialog.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   data: PropTypes.objectOf(PropTypes.string).isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.objectOf(PropTypes.any).isRequired,
 };
